@@ -81,6 +81,20 @@ def add_title_block(doc, content):
     S.style_run(ovr, ea=S.FONT_TITLE_EA, size=10, bold=True, color=S.ACCENT)
 
 
+def render_summary(doc, summary):
+    summary = (summary or "").strip()
+    if not summary:
+        return
+    add_section_heading(doc, "摘要")
+    p = doc.add_paragraph()
+    p.paragraph_format.left_indent = Pt(8)
+    p.paragraph_format.right_indent = Pt(2)
+    p.paragraph_format.space_after = Pt(6)
+    S.paragraph_borders(p, left=(18, S.HAIRLINE))
+    r = p.add_run(summary)
+    S.style_run(r, size=10.5, color="404040")
+
+
 def add_section_heading(doc, text):
     """小节标题:左侧色条 + 底部细分隔线,撑出层次。"""
     _spacer(doc, 6)
@@ -219,6 +233,7 @@ def build(content, out_path):
     S.add_footer_pagenum(doc.sections[0], footer_text)
 
     add_title_block(doc, content)
+    render_summary(doc, content.get("summary", ""))
     render_achievements(doc, content.get("achievements", []))
     render_in_progress(doc, content.get("in_progress", []))
     render_blockers(doc, content.get("blockers", []))
